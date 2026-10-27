@@ -195,7 +195,7 @@ Copie `.env.example` para `.env`. Principais:
    - `DATABASE_URL` = string *pooled* do Supabase (porta 6543, `?pgbouncer=true`)
    - `DIRECT_URL` = string direta do Supabase (porta 5432)
    - `AUTH_SECRET` = segredo aleatório
-   - `AUTH_URL` / `NEXTAUTH_URL` = URL do deploy (ex.: `https://comerziahub.vercel.app`)
+   - `AUTH_URL` / `NEXTAUTH_URL` = URL do deploy (ex.: `https://comerziahub-woad.vercel.app`)
 4. **Build**: o comando padrão (`prisma generate && next build`) já está em `package.json`.
 5. Schema e seed são aplicados uma vez, do seu computador: `npm run db:push` e `npm run db:seed` (o `.env` já aponta para o Supabase).
 

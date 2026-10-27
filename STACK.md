@@ -3,7 +3,7 @@
 > Documento vivo: **atualizado conforme o projeto evolui**. Veja o
 > [Histórico de atualizações](#-histórico-de-atualizações) no fim.
 >
-> **Última atualização:** 2026-09-26
+> **Última atualização:** 2026-10-27
 
 Plataforma de **estoque + delivery + marketplace + rede social comercial**.
 
@@ -34,16 +34,17 @@ Plataforma de **estoque + delivery + marketplace + rede social comercial**.
 
 ## ☁️ Plataformas / hospedagem
 
-- **GitHub** — repositório e versionamento: `RafaelSigmaKK67/comerziahub`
-- **Vercel** — deploy/hospedagem de produção (deploy automático a cada push no `main`) → **https://comerziahub.vercel.app**
-- **Aiven** — banco MySQL de produção
+- **GitHub** — repositório e versionamento: `RafaelRaunanDaSilva/comerziahub` (conta nova desde 2026-10-27)
+- **Vercel** — deploy/hospedagem de produção (deploy automático a cada push no `main`) → **https://comerziahub-woad.vercel.app**
+- **Supabase** — PostgreSQL gerenciado (projeto `trydufggmvwcuelvzeam`, São Paulo `sa-east-1`) — o mesmo banco para local e produção
+- **Conta principal** (GitHub, Vercel e Supabase): `drafaelraunan@gmail.com` — a conta antiga (`RafaelSigmaKK67`) foi desativada em 2026-10-27
 
 ## 🧰 Ferramentas de apoio
 
 - **Node.js 22** (runtime) · **npm** (gerenciador de pacotes) · **Git**
 - **Puppeteer + Chrome** — captura automática de screenshots (`scripts/screenshots.mjs`)
 - Scripts utilitários: `scripts/sync-prod-db.mjs` (env na Vercel), `scripts/push-prod.mjs` (schema+seed no Aiven), `scripts/test-auth.mjs` (teste e2e), `scripts/screenshots.mjs`
-- **Dump do banco**: `database/comerziahub.sql` (importável no XAMPP/phpMyAdmin)
+- **Dump legado (MySQL)**: `database/comerziahub.sql` — histórico; o banco atual é o Supabase
 
 ## 🗂️ Arquitetura (pastas)
 
@@ -62,7 +63,8 @@ middleware.ts# proteção de rotas por papel (RBAC)
 
 | Variável | Uso |
 |----------|-----|
-| `DATABASE_URL` | conexão MySQL (XAMPP local / Aiven em produção) |
+| `DATABASE_URL` | conexão PostgreSQL **pooled** do Supabase (porta 6543, `?pgbouncer=true`) |
+| `DIRECT_URL` | conexão PostgreSQL **direta** do Supabase (porta 5432) — usada por `db:push`/seed |
 | `AUTH_SECRET` | segredo do Auth.js |
 | `AUTH_URL` / `NEXTAUTH_URL` | URL da aplicação |
 | `NEXT_PUBLIC_APP_URL` | URL pública |
@@ -79,13 +81,15 @@ npm run db:studio    # Prisma Studio
 
 ## ✅ Estado atual
 
-Funcionando **local (XAMPP)** e **produção (Vercel + Aiven)**: cadastro/login, marketplace,
+Funcionando **local** e **produção (Vercel + Supabase)**, ambos no mesmo banco PostgreSQL em São Paulo: cadastro/login, marketplace,
 loja/produto, carrinho/checkout, pedidos, painéis (admin/loja/cliente/entregador),
 feed social, mensagens, cashback e fidelidade. Tema cibernético com alternância claro/escuro.
 
 ---
 
 ## 📜 Histórico de atualizações
+
+- **2026-10-27** — **Migração de contas (GitHub + Vercel + Supabase)**: a conta antiga (`RafaelSigmaKK67`, rafaelrauna@gmail.com) foi desativada e tudo passou para a conta nova **drafaelraunan@gmail.com**. **GitHub**: os 5 repositórios (comerziahub, Curriculo-Rafael, JogoDEV, Sistema_Adehasc, Site_Adehasc) importados com histórico completo em `github.com/RafaelRaunanDaSilva` (verificado branch a branch por SHA). **Vercel**: novo time "Projetos De Rafael", projeto `comerziahub` em **https://comerziahub-woad.vercel.app** (o domínio `comerziahub.vercel.app` ficou preso ao time antigo), função mantida em `gru1`. **Supabase**: novo projeto `trydufggmvwcuelvzeam` em **São Paulo (sa-east-1)**, host `aws-1-sa-east-1.pooler.supabase.com`; schema aplicado com `db push`, seed e simulação (`db:simulate`) reexecutados — 78 usuários, 13 lojas, 69 produtos, 182 pedidos, 126 entregas. `DATABASE_URL`/`DIRECT_URL` atualizadas na Vercel (Production/Preview/Development); `.env` local apontando para o mesmo projeto.
 
 - **2026-10-10** — **Simulação de uso real** (`npm run db:simulate`, `prisma/simulate.ts`): bots em todos os cargos povoaram o Supabase — 10 lojas novas (padaria, pet, farmácia, açougue, eletrônicos, livraria, floricultura, hamburgueria, gelateria, beleza) com 57 produtos, 40 clientes, 10 vendedores, 8 entregadores, 2 moderadores; 180 pedidos nos últimos 60 dias (entrega/retirada, Pix/cartão/dinheiro, status realistas, baixa de estoque, lucro via `lib/finance`, cashback e fidelidade), 110 avaliações (médias recalculadas), 71 posts com 611 curtidas e 107 comentários, conversas e cupons. Fotos por palavra-chave via **Openverse** (CC, sem chave), cada URL verificada e cacheada. Totais: 78 usuários, 13 lojas, 69 produtos, 182 pedidos, 126 entregas. Idempotente (bots `@bots.comerziahub.com`, senha `senha123`).
 
